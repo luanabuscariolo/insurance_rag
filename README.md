@@ -6,7 +6,7 @@ Combina **FastAPI** + **SQLite** + **ChromaDB** + **Sentence Transformers** num 
 
 ---
 
-## O que este projeto faz
+## O que este projeto fará:
 
 | Funcionalidade | Tecnologia |
 |---|---|
