@@ -1,0 +1,25 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+pydantic==2.7.1
+pydantic-settings==2.2.1
+
+# database
+sqlalchemy==2.0.30
+aiosqlite==0.20.0
+
+# vector store
+chromadb==0.5.0
+
+# embeddings (free, no API key needed)
+sentence-transformers==3.0.0
+
+# document processing
+pypdf==4.2.0
+
+# openai (optional, for generation)
+#openai==1.30.1
+
+# utilities
+python-multipart==0.0.9
+python-dotenv==1.0.1
+httpx==0.27.0

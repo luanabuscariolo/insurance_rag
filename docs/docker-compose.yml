@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: insurance_rag_api
+    ports:
+      - "8000:8000"
+    environment:
+      # Opcional: adicione sua chave da OpenAI para geração de respostas
+      # Sem ela, o sistema funciona mas retorna o contexto bruto em vez da resposta gerada
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+    volumes:
+      # persiste o banco SQLite e o índice ChromaDB entre reinicializações
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s   # tempo para carregar o modelo de embeddings
+
+# volume nomeado alternativo — comente o "volumes:" acima e use este
+# para manter os dados mesmo se a pasta local for deletada
+volumes:
+  insurance_data:
+    driver: local
