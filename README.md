@@ -1,3 +1,7 @@
+![Status](https://img.shields.io/badge/status-in%20development-yellow)
+## 🚧 Projeto em andamento
+Este projeto ainda está em desenvolvimento.
+
 # 🏥 Insurance Claims RAG API
 
 Sistema de gestão de sinistros com busca inteligente por linguagem natural.
