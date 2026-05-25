@@ -4,7 +4,7 @@ from enum import StrEnum
 from pydantic import BaseModel, Field
 
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Float, Integer, String, DateTime
 
 
 # declarative base class

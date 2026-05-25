@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Environment variables
+.env
+.env.*
+
+# Database
+data/insurance.db
+data/insurance.db-shm
+data/insurance.db-wal
+
+# Vector store (ChromaDB)
+data/chroma/
+
+# Uploaded / processed documents
+data/policies/*.pdf
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

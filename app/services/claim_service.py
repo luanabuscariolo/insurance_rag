@@ -13,7 +13,7 @@ class ClaimService:
         self.db.add(claim)
         await self.db.flush()  # Get the ID of the newly created claim
         await self.db.refresh(claim)  # Refresh to get updated fields like created_at
-        return ClaimResponse.from_orm(claim)
+        return ClaimResponse.model_validate(claim)
     
     async def get_by_id(self, claim_id: int) -> ClaimDB | None:
         result = await self.db.execute(select(ClaimDB).where(ClaimDB.id == claim_id))
