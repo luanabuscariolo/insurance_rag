@@ -1,48 +1,48 @@
-![Status](https://img.shields.io/badge/status-in%20development-yellow)
-## 🚧 Projeto em andamento
-Este projeto ainda está em desenvolvimento.
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.136-009688)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-# 🏥 Insurance Claims RAG API
+# Insurance Claims RAG API
 
-Sistema de gestão de sinistros com busca inteligente por linguagem natural.
+A REST API for insurance claims management with natural language search, built on a full RAG (Retrieval-Augmented Generation) pipeline.
 
-Combina **FastAPI** + **SQLite** + **ChromaDB** + **Sentence Transformers** num pipeline RAG completo, dockerizado e pronto para produção.
+Combines **FastAPI** + **SQLite** + **ChromaDB** + **Sentence Transformers** for semantic retrieval, with optional answer generation via **LM Studio** (local) or any OpenAI-compatible backend.
 
 ---
 
-## O que este projeto fará:
+## Features
 
-| Funcionalidade | Tecnologia |
+| Feature | Technology |
 |---|---|
-| CRUD de sinistros com filtros e paginação | FastAPI + SQLAlchemy + SQLite |
-| Ingestão de documentos de apólices | Chunking + Sentence Transformers |
-| Busca semântica por similaridade | ChromaDB (vector database) |
-| Perguntas em linguagem natural | RAG pipeline + OpenAI (opcional) |
-| Deploy em container | Docker + docker-compose |
+| Claims CRUD with filters and pagination | FastAPI + SQLAlchemy + SQLite |
+| Policy document ingestion | Chunking + Sentence Transformers |
+| Semantic similarity search | ChromaDB (vector database) |
+| Natural language Q&A | RAG pipeline + LM Studio / OpenAI-compatible |
 
 ---
 
-## Arquitetura
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        FastAPI App                          │
 ├──────────────┬──────────────────┬───────────────────────────┤
 │  /claims     │  /documents      │  /ask                     │
-│  CRUD        │  Ingestão RAG    │  Perguntas linguagem nat. │
+│  CRUD        │  Document ingest │  Natural language Q&A     │
 ├──────────────┼──────────────────┼───────────────────────────┤
-│ ClaimService │  RAGService      │  RAGService               │
+│ ClaimService │              RAGService                      │
 ├──────────────┼──────────────────┴───────────────────────────┤
-│  SQLite      │         ChromaDB (vector store)              │
-│  (sinistros) │  + Sentence Transformers (embeddings)        │
+│  SQLite      │  ChromaDB (vector store)                     │
+│  (claims)    │  + Sentence Transformers (embeddings)        │
 └──────────────┴──────────────────────────────────────────────┘
 ```
 
-### Pipeline RAG explicado
+### RAG Pipeline
 
 ```
-INGESTÃO:
-  Documento .txt
+INGESTION:
+  .txt / .md document
       │
       ▼
   Chunking (500 chars, 80 overlap)
@@ -51,171 +51,163 @@ INGESTÃO:
   Embeddings (all-MiniLM-L6-v2)
       │
       ▼
-  ChromaDB (persiste em disco)
+  ChromaDB (persisted to disk)
 
 QUERY:
-  Pergunta do usuário
+  User question
       │
       ▼
-  Embedding da pergunta
+  Question embedding
       │
       ▼
-  Busca por similaridade de cosseno no ChromaDB
+  Cosine similarity search in ChromaDB
       │
       ▼
-  Top-4 chunks mais relevantes
+  Top-4 most relevant chunks
       │
       ▼
-  Prompt: "Responda com base neste contexto: [chunks]"
+  Prompt: "Answer based on this context: [chunks]"
       │
       ▼
-  OpenAI gpt-4o-mini → Resposta final
+  LM Studio / OpenAI-compatible LLM → Final answer
 ```
 
 ---
 
-## Estrutura de pastas
+## Project Structure
 
 ```
 insurance-rag/
 ├── app/
 │   ├── main.py              # FastAPI app, lifespan, routers
-│   ├── database.py          # engine SQLAlchemy async, get_db
+│   ├── database.py          # Async SQLAlchemy engine
 │   ├── models/
 │   │   └── claim.py         # SQLAlchemy ORM + Pydantic schemas
 │   ├── services/
-│   │   ├── claim_service.py # lógica de negócio dos sinistros
-│   │   └── rag_service.py   # chunking, embeddings, retrieval, geração
+│   │   ├── claim_service.py # Claims business logic
+│   │   └── rag_service.py   # Chunking, embeddings, retrieval, generation
 │   └── routes/
-│       ├── claims.py        # endpoints CRUD
-│       ├── documents.py     # endpoints de ingestão
-│       └── search.py        # endpoint /ask (RAG)
+│       ├── claims.py        # CRUD endpoints
+│       ├── documents.py     # Document ingestion endpoints
+│       └── search.py        # /ask RAG endpoint
 ├── data/
-│   └── policies/            # documentos .txt de apólices
-├── Dockerfile
-├── docker-compose.yml
+│   └── policies/            # Sample .txt policy documents
 ├── requirements.txt
-├── .env.example
 └── README.md
 ```
 
 ---
 
-## Como rodar
+## Getting Started
 
-### Opção 1 — Docker (recomendado)
+### Prerequisites
+
+- Python 3.11+
+- (Optional) [LM Studio](https://lmstudio.ai/) for local LLM answer generation
+
+### Installation
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/seu-usuario/insurance-rag.git
+# 1. Clone the repository
+git clone https://github.com/your-username/insurance-rag.git
 cd insurance-rag
 
-# 2. Copie e configure variáveis de ambiente
-cp .env.example .env
-# edite .env e adicione sua OPENAI_API_KEY (opcional)
-
-# 3. Suba os containers
-docker compose up --build
-
-# 4. Acesse o Swagger UI
-# http://localhost:8000/docs
-```
-
-### Opção 2 — Local (sem Docker)
-
-```bash
-# 1. Crie e ative o ambiente virtual
+# 2. Create and activate virtual environment
 python -m venv .venv
-source .venv/bin/activate        # Linux/Mac
-# ou: .venv\Scripts\activate     # Windows
+.venv\Scripts\activate          # Windows
+# or: source .venv/bin/activate  # Linux/Mac
 
-# 2. Instale as dependências
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 3. Configure as variáveis
-cp .env.example .env
-
-# 4. Crie as pastas de dados
-mkdir -p data/policies data/chroma
-
-# 5. Inicie a API
+# 4. Start the API
 uvicorn app.main:app --reload --port 8000
-
-# 6. Acesse: http://localhost:8000/docs
 ```
+
+Open **http://localhost:8000/docs** for the interactive Swagger UI.
+
+### LM Studio (Optional)
+
+To enable local LLM answer generation:
+
+1. Download and install [LM Studio](https://lmstudio.ai/)
+2. Load a chat model (e.g. `Mistral 7B`, `Llama 3`)
+3. Start the local server (default: `http://localhost:1234`)
+4. Set the following environment variables before starting the API:
+
+```env
+OPENAI_API_KEY=lm-studio
+OPENAI_BASE_URL=http://localhost:1234/v1
+OPENAI_MODEL=<your-loaded-model-name>
+```
+
+> Without LM Studio configured, `/ask` still works — it returns the raw retrieved context chunks instead of a generated answer.
 
 ---
 
-## Testando o sistema
+## Usage
 
-### Passo 1 — Indexar os documentos de exemplo
+### Step 1 — Index sample documents
 
 ```bash
 curl -X POST http://localhost:8000/documents/ingest/seed
 ```
 
-Resposta esperada:
 ```json
 {
   "seeded": 3,
   "details": [
-    {"source": "policy_auto.txt", "chunks_created": 14, ...},
-    {"source": "policy_home.txt", "chunks_created": 16, ...},
-    {"source": "policy_health.txt", "chunks_created": 18, ...}
+    {"source": "auto_policy.txt", "chunks_created": 14},
+    {"source": "home_policy.txt", "chunks_created": 16},
+    {"source": "health_policy.txt", "chunks_created": 18}
   ]
 }
 ```
 
-### Passo 2 — Criar um sinistro
+### Step 2 — Create a claim
 
 ```bash
 curl -X POST http://localhost:8000/claims \
   -H "Content-Type: application/json" \
   -d '{
     "policy_number": "POL-2024-001",
-    "claimant_name": "Maria Silva",
+    "claimant_name": "Jane Smith",
     "claim_type": "auto",
-    "description": "Colisão traseira na Av. Paulista, danos na traseira do veículo",
+    "description": "Rear-end collision, damage to rear bumper",
     "amount_claimed": 8500.00
   }'
 ```
 
-### Passo 3 — Fazer uma pergunta (RAG)
+### Step 3 — Ask a question (RAG)
 
 ```bash
 curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{
-    "question": "Qual o prazo para comunicar um sinistro de colisão?",
+    "question": "What is the deadline to report a collision claim?",
     "policy_type": "auto"
   }'
 ```
 
-Resposta:
 ```json
 {
-  "question": "Qual o prazo para comunicar um sinistro de colisão?",
-  "answer": "De acordo com a apólice de seguro automóvel, o segurado tem prazo de até 72 horas após o sinistro para comunicar à seguradora. Em casos de roubo ou furto, o prazo é reduzido para 48 horas.",
+  "question": "What is the deadline to report a collision claim?",
+  "answer": "According to the auto insurance policy, the insured must report a claim within 72 hours of the incident...",
   "sources": [
-    {"source": "policy_auto.txt", "relevance": 0.891}
+    {"source": "auto_policy.txt", "relevance": 0.891}
   ]
 }
 ```
 
-### Passo 4 — Listar sinistros com filtro
+### Step 4 — List claims with filters
 
 ```bash
-# todos os sinistros
 curl http://localhost:8000/claims
-
-# filtrado por status
 curl "http://localhost:8000/claims?status=pending&claim_type=auto"
-
-# estatísticas agrupadas
 curl http://localhost:8000/claims/stats/summary
 ```
 
-### Passo 5 — Atualizar status de um sinistro
+### Step 5 — Update claim status
 
 ```bash
 curl -X PATCH http://localhost:8000/claims/1/status \
@@ -225,58 +217,57 @@ curl -X PATCH http://localhost:8000/claims/1/status \
 
 ---
 
-## Endpoints
+## API Reference
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/health` | Status da API |
-| POST | `/claims` | Criar sinistro |
-| GET | `/claims` | Listar (com filtros) |
-| GET | `/claims/{id}` | Buscar por ID |
-| PATCH | `/claims/{id}/status` | Atualizar status |
-| DELETE | `/claims/{id}` | Remover |
-| GET | `/claims/stats/summary` | Estatísticas SQL |
-| POST | `/documents/ingest` | Indexar texto |
-| POST | `/documents/ingest/file` | Upload de .txt |
-| POST | `/documents/ingest/seed` | Indexar exemplos |
-| GET | `/documents/stats` | Info do índice vetorial |
-| POST | `/ask` | Pergunta RAG completa |
-| GET | `/ask/retrieve` | Só retrieval (debug) |
-
----
-
-## Conceitos aplicados neste projeto
-
-- **RAG (Retrieval Augmented Generation)**: recupera contexto relevante antes de gerar resposta
-- **Chunking com overlap**: divide documentos mantendo contexto nas bordas
-- **Embeddings semânticos**: representação vetorial do significado do texto
-- **Vector database**: busca por similaridade em vez de palavras-chave exactas
-- **Async Python**: todas as operações I/O são assíncronas (async/await)
-- **Dependency Injection**: FastAPI injeta sessão de DB em cada request
-- **Separação de responsabilidades**: routes → services → models
-- **Pydantic v2**: validação e serialização de dados
-- **SQLAlchemy async**: ORM moderno com suporte a asyncio
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | API health check |
+| POST | `/claims` | Create a claim |
+| GET | `/claims` | List claims (with filters) |
+| GET | `/claims/{id}` | Get claim by ID |
+| PATCH | `/claims/{id}/status` | Update claim status |
+| DELETE | `/claims/{id}` | Delete a claim |
+| GET | `/claims/stats/summary` | Aggregated statistics |
+| POST | `/documents/ingest` | Index raw text |
+| POST | `/documents/ingest/file` | Upload a .txt or .md file |
+| POST | `/documents/ingest/seed` | Index sample policies |
+| GET | `/documents/stats` | Vector index info |
+| POST | `/ask` | Full RAG Q&A |
+| GET | `/ask/retrieve` | Retrieval only (debug) |
 
 ---
 
-## Próximos passos (evoluções possíveis)
+## Tech Stack
 
-- [ ] Adicionar autenticação (JWT)
-- [ ] Reranking dos chunks recuperados
-- [ ] Hybrid search (vetorial + BM25 por palavras-chave)
-- [ ] Migrar para PostgreSQL + pgvector em produção
-- [ ] Observabilidade com LangSmith ou Phoenix Arize
-- [ ] Suporte a PDF (extração com pypdf)
-- [ ] Testes unitários com pytest
+| Layer | Technology |
+|---|---|
+| Web framework | FastAPI (async) |
+| ORM / Database | SQLAlchemy async + SQLite |
+| Vector store | ChromaDB |
+| Embeddings | Sentence Transformers (`all-MiniLM-L6-v2`) |
+| LLM backend | LM Studio (local) / any OpenAI-compatible API |
+| Data validation | Pydantic v2 |
 
 ---
 
-## Tecnologias usadas
+## Key Concepts
 
-- **FastAPI** — framework web async
-- **SQLAlchemy** — ORM async com SQLite
-- **ChromaDB** — vector database local
-- **Sentence Transformers** — embeddings gratuitos (all-MiniLM-L6-v2)
-- **OpenAI** — geração de respostas (opcional)
-- **Pydantic v2** — validação de dados
-- **Docker** — containerização
+- **RAG**: retrieves relevant context before generating an answer
+- **Chunking with overlap**: splits documents while preserving context at boundaries
+- **Semantic embeddings**: vector representations of text meaning
+- **Vector database**: similarity search instead of exact keyword matching
+- **Async Python**: all I/O operations use `async/await`
+- **Dependency injection**: FastAPI injects DB session per request
+- **Separation of concerns**: routes → services → models
+
+---
+
+## Roadmap
+
+- [ ] JWT authentication
+- [ ] Chunk reranking
+- [ ] Hybrid search (vector + BM25)
+- [ ] PostgreSQL + pgvector migration
+- [ ] PDF support (pypdf)
+- [ ] Unit tests (pytest)
+- [ ] Docker support

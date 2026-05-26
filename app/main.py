@@ -19,6 +19,10 @@ from fastapi.responses import JSONResponse
 from app.database import init_db
 from app.routes import claims, documents, search
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gerenciador de ciclo de vida da aplicação"""

@@ -17,6 +17,7 @@ COLLECTION_NAME = "insurannce_policies"
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "")
 
 class RAGService:
 
@@ -84,7 +85,7 @@ class RAGService:
         where_filter = {"policy_type":policy_type} if policy_type else None
 
         results = self._collection.query(
-            query_embedding=query_embedding,
+            query_embeddings=query_embedding,
             n_results=min(n_results, self._collection.count() or 1),
             where=where_filter,
             include=["documents", "metadatas", "distances"],
@@ -143,7 +144,7 @@ class RAGService:
         try:
             from openai import AsyncOpenAI
 
-            client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+            client = AsyncOpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL if OPENAI_BASE_URL else None)
             response = await client.chat.completions.create(
                 model=OPENAI_MODEL,
                 messages=[
