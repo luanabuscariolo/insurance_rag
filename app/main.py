@@ -34,8 +34,8 @@ async def lifespan(app: FastAPI):
     await init_db()  # Inicializar o banco de dados
 
     print("Aplicação iniciada com sucesso!")
-    print("Insurance RAG API pronta em http://localhost:8001")
-    print("Swagger UI disponível em http://localhost:8001/docs")
+    print("Insurance RAG API pronta em http://localhost:9001")
+    print("Swagger UI disponível em http://localhost:9001/docs")
 
     yield
     # Aqui você pode adicionar código de limpeza, como fechar conexões
