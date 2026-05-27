@@ -1,5 +1,6 @@
 # Python
 __pycache__/
+presentation/
 *.pyc
 *.pyo
 *.pyd
