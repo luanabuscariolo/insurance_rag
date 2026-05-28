@@ -65,6 +65,10 @@ app.include_router(claims.router)
 app.include_router(documents.router)
 app.include_router(search.router)
 
+@app.get("/health", tags=["Health"])
+async def health():
+    return JSONResponse({"status": "ok"})
+
 @app.get("/", include_in_schema=False)
 async def root():
     return JSONResponse({
